@@ -1,0 +1,40 @@
+<div class="container-fluid">
+  <div class="row align-items-center text-center full-height">
+    <div class="col">
+      <button (click)="newUser()" class="newUser">
+        <span class="material-symbols-outlined"> add </span>
+
+        New
+      </button>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Email</th>
+            <th scope="col">Função</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let user of users">
+            <tr>
+              <th scope="row">{{ user.name }}</th>
+              <td>{{ user.email }}</td>
+              <td>{{ user.function }}</td>
+              <td class="actions">
+                <button (click)="editUser(user)">
+                  <span class="material-symbols-outlined"> edit </span>
+                </button>
+
+                <button (click)="deleteUser(user)">
+                  <span class="material-symbols-outlined"> close </span>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

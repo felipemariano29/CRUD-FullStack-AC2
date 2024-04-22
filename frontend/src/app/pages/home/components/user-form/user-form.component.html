@@ -1,0 +1,59 @@
+<div class="container-fluid content">
+  <div class="row align-items-center text-center">
+    <div class="col">
+      <form (ngSubmit)="onSubmit()" [formGroup]="newUser">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nome</label>
+          <input
+            formControlName="name"
+            type="email"
+            class="form-control"
+            id="name"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            formControlName="email"
+            type="email"
+            class="form-control"
+            id="email"
+          />
+        </div>
+
+        <div class="mb-3">
+          <select
+            formControlName="function"
+            class="form-select"
+            aria-label="Função"
+          >
+            <option selected>Função</option>
+            <option [value]="functions.FE">Engenheiro de Frontend</option>
+            <option [value]="functions.BE">Engenheiro de Backend</option>
+            <option [value]="functions.AD">Analista de Dados</option>
+            <option [value]="functions.LT">Líder Técnico</option>
+          </select>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Senha</label>
+            <input
+              formControlName="password"
+              type="password"
+              class="form-control"
+              id="password"
+            />
+          </div>
+        </div>
+
+        <button
+          [disabled]="!newUser.valid"
+          type="submit"
+          class="btn btn-primary"
+        >
+          Salvar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

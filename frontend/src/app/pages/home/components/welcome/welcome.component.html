@@ -1,0 +1,31 @@
+<div class="container-fluid">
+  <div class="row align-items-center text-center full-height">
+    <div class="col">
+      <div class="users-quantity card">
+        <p>Quantidade de usuários no sistema:</p>
+        <span class="quantity">{{ usersQuantity }}</span>
+      </div>
+
+      <div class="user-by-function card">
+        <table>
+          <thead>
+            <th>Função</th>
+            <th>Quantidade</th>
+          </thead>
+
+          <tbody>
+            <ng-container *ngFor="let user of usersByFunction">
+              <tr>
+                <td>
+                  {{ user.function }}
+                </td>
+
+                <td>{{ user.quantity }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

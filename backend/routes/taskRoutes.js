@@ -8,14 +8,15 @@ const {
   getTasksWithoutOwner,
   assignOwner,
 } = require("../controllers/taskController");
+const { auth } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.get("/", getTasks); // get all tasks
-router.get("/:id", getTask); // get a single task
-router.post("/", createTask); // create a new task
-router.put("/:id", updateTask); // update a task
-router.delete("/:id", deleteTask); // delete a task
-router.get("/withoutOwner", getTasksWithoutOwner); // get tasks without owner
-router.put("/assignOwner/:id", assignOwner); // assign owner to a task
+router.get("/withoutOwner", auth, getTasksWithoutOwner); // get tasks without owner
+router.get("/", auth, getTasks); // get all tasks
+router.get("/:id", auth, getTask); // get a single task
+router.post("/", auth, createTask); // create a new task
+router.put("/:id", auth, updateTask); // update a task
+router.delete("/:id", auth, deleteTask); // delete a task
+router.put("/assignOwner/:id", auth, assignOwner); // assign owner to a task
 
 module.exports = router;

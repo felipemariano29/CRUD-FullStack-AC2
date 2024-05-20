@@ -38,7 +38,7 @@ exports.createUser = async (req, res) => {
       .status(201)
       .json({ success: true, message: "User created successfully", user });
   } catch (error) {
-    res.status(500).json({ message: `Server error: ${error}` });
+    res.status(500).json({ message: `${error}` });
   }
 };
 
@@ -63,6 +63,13 @@ exports.deleteUser = async (req, res) => {
   try {
     const id = req.params.id;
     const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
     res
       .status(200)
       .json({ success: true, message: "User deleted successfully", user });
@@ -77,6 +84,7 @@ exports.getUserCountByRole = async (req, res) => {
     const counts = await Promise.all(
       roles.map((role) => User.countDocuments({ role }))
     );
+
     const result = roles.reduce((acc, role, index) => {
       acc[role] = counts[index];
       return acc;

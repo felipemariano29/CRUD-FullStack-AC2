@@ -1,9 +1,11 @@
 const Task = require("../models/Task");
+const User = require("../models/User");
 
 exports.getTasks = async (req, res) => {
   try {
-    const owner = req.user;
+    const owner = req.user._id;
     const tasks = await Task.find({ owner });
+
     res
       .status(200)
       .json({ success: true, message: "Tasks fetched successfully", tasks });
@@ -17,7 +19,13 @@ exports.getTask = async (req, res) => {
     const { id } = req.params;
     const task = await Task.findById(id);
 
-    if (!task.owner.equals(req.user)) {
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+
+    if (!task.owner.equals(req.user._id)) {
       return res
         .status(401)
         .json({ success: false, message: "Unauthorized access" });
@@ -34,11 +42,11 @@ exports.getTask = async (req, res) => {
 exports.createTask = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const task = new Task({ title, description, owner: req.user });
+    const task = new Task({ title, description });
     await task.save();
     res
       .status(201)
-      .json({ success: true, message: "Task created successfully" });
+      .json({ success: true, message: "Task created successfully", task });
   } catch (error) {
     res.status(500).json({ message: `Server error: ${error}` });
   }
@@ -50,7 +58,13 @@ exports.updateTask = async (req, res) => {
     const { title, description } = req.body;
     let task = await Task.findById(id);
 
-    if (!task.owner.equals(req.user)) {
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+
+    if (!task.owner.equals(req.user._id)) {
       return res.status(401).json({
         success: false,
         message: "Unauthorized access",
@@ -75,7 +89,13 @@ exports.deleteTask = async (req, res) => {
     const { id } = req.params;
     const task = await Task.findById(id);
 
-    if (!task.owner.equals(req.user)) {
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+
+    if (!task.owner.equals(req.user._id)) {
       return res.status(401).json({
         success: false,
         message: "Unauthorized access",
@@ -85,7 +105,7 @@ exports.deleteTask = async (req, res) => {
     await Task.findByIdAndDelete(id);
     res
       .status(200)
-      .json({ success: true, message: "Task deleted successfully" });
+      .json({ success: true, message: "Task deleted successfully", task });
   } catch (error) {
     res.status(500).json({ message: `Server error: ${error}` });
   }
@@ -105,7 +125,22 @@ exports.getTasksWithoutOwner = async (req, res) => {
 exports.assignOwner = async (req, res) => {
   try {
     const { id } = req.params;
-    const { owner } = req.body;
+    const { ownerEmail } = req.body;
+
+    if (!ownerEmail) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Owner is required" });
+    }
+
+    const owner = await User.findOne({ email: ownerEmail });
+
+    if (!owner) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Owner not found" });
+    }
+
     const task = await Task.findById(id);
 
     if (!task) {
